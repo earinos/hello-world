@@ -1,0 +1,85 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Apr  2 18:05:49 2019
+
+@author: Eric
+"""
+
+from bs4 import BeautifulSoup
+import requests
+import pandas as pd
+
+
+
+
+
+"""EXEMPLE D'UNA WEB REAL"""
+pagina = requests.get("https://www.habitaclia.com/alquiler-barcelona.htm")
+
+#Passem el contingut HTML de la web a un objecte BeautifulSoup():
+traduit = BeautifulSoup(pagina.content, 'html.parser')
+panell = traduit.find(id="js-list")
+#list-item-content
+primer_contingut = panell.find_all(class_="list-item-content")
+preu = panell.find_all(class_="list-item-content-second")
+p_contingut = primer_contingut[0]
+s_contingut = preu[0]
+#print(p_contingut.prettify())
+
+
+
+titols = p_contingut.find(class_= "list-item-title").get_text()
+localitzacio = p_contingut.find(class_= "list-item-location").get_text()
+metres = p_contingut.find(class_= "list-item-feature").get_text()
+descripcions = p_contingut.find(class_= "list-item-description").get_text()
+
+preu = s_contingut.find(class_= "font-2").get_text()
+
+
+print(titols, localitzacio, preu, sep= '\n')
+
+
+#Bucle per els titols dels anuncis:
+tot_titols = panell.select(".list-item-content .list-item-title")
+titols = [pt.get_text() for pt in tot_titols]
+print(titols)
+
+#Bucle per els titols dels anuncis, estan a un altre section per tant es fara diferent:
+tot_preus = panell.select(".list-item-content-second .font-2")
+preus = [pt.get_text() for pt in tot_preus]
+print(preus)
+
+#Bucle per la localitzacio dels anuncis:
+tot_localitzacions = panell.select(".list-item-content .list-item-location")
+localitzacions = [pt.get_text() for pt in tot_localitzacions]
+print(localitzacions)
+
+#Bucle per les descripcions dels anuncis:
+tot_descripcions = panell.select(".list-item-content .list-item-description")
+descripcions = [pt.get_text() for pt in tot_descripcions]
+print(descripcions)
+
+#Bucle per els metres dels anuncis:
+tot_metres = panell.select(".list-item-content .list-item-feature")
+metres = [pt.get_text() for pt in tot_metres]
+print(metres)
+
+print(titols, preus, localitzacions, descripcions, metres)
+
+
+# Utilitzem la llibreria pandas per passar les dades a un Dataframe:
+taula = pd.DataFrame({
+        "Titol": titols,
+        "Preu": preus,
+        "Localitzacio": localitzacions,
+        "Descripcio": descripcions,
+        "Metres": metres,
+    })
+taula
+
+
+
+
+
+
+
