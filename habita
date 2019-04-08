@@ -2,7 +2,7 @@
 """
 Created on Tue Apr  2 18:05:49 2019
 
-@author: Eric
+@author: Jin Lung i Eric Ariño
 """
 
 from bs4 import BeautifulSoup
